@@ -1,3 +1,5 @@
+import { Vector2 } from 'Vector2.js';
+
 //Class representing physical object that can be affected by forces
 class PhysObject {
     /*
@@ -8,7 +10,8 @@ class PhysObject {
      * @param {Vector2} acceleration Acceleration of the object.
      * @param {number}  mass         Mass of the object.
      */
-    constructor(position, gravity = 9.8, velocity, acceleration, mass = 1) {
+    constructor(position = new Vector2(0,0), gravity = 0, velocity = new Vector2(0,0),
+        acceleration = new Vector2(0,0), mass = 1) {
         this.position = position;
         this.gravity = gravity;
         this.velocity = velocity;

@@ -1,8 +1,29 @@
-import Vector2 from 'Vector2.js';
-import PhysObject from 'PhysObject.js';
+import { Vector2 } from './Vector2.js';
 
-function test() {
-    var vector = new Vector2(0, 1);
+var vector = new Vector2(1, 0);
+console.log(vector.direction * 180 / Math.PI);//0
 
-    document.write('hello');
-}
+vector.y = 1;
+console.log(vector.direction * 180 / Math.PI);//45
+
+vector.x = 0;
+console.log(vector.direction * 180 / Math.PI);//90
+
+vector.x = -1;
+console.log(vector.direction * 180 / Math.PI);//135
+
+vector.y = 0;
+console.log(vector.direction * 180 / Math.PI);//180
+
+vector.y = -1;
+console.log(vector.direction * 180 / Math.PI);//225
+
+vector.x = 0;
+console.log(vector.direction * 180 / Math.PI);//270
+
+vector.x = 1;
+console.log(vector.direction * 180 / Math.PI);//315
+
+vector.y = 0;
+vector.x = 0;
+console.log(vector.direction * 180 / Math.PI);//null

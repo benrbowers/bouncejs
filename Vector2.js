@@ -64,7 +64,7 @@ export class Vector2 {
         }//End if
 
         else if (this.y == 0) {
-            if (x > 0) {
+            if (this.x > 0) {
                 return 0.0;
             }//End if
             else {
@@ -76,7 +76,7 @@ export class Vector2 {
             return Math.PI + arctan;
         }//End else
 
-        else if (y > 0) {
+        else if (this.y > 0) {
             return arctan;
         }//End else if
 

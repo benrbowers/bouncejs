@@ -1,7 +1,7 @@
 import { Vector2 } from 'Vector2.js';
 
 //Class representing physical object that can be affected by forces
-class PhysObject {
+export class PhysObject {
     /*
      * Create PhysObject
      * @param {Vector2} position     Position of the object in pixels.
@@ -19,7 +19,12 @@ class PhysObject {
         this.mass = mass;
     }
 
+    /*
+    * Applies a force to the object. The "force" will remain until an equal and opposite
+    * force is applied or the acceleration is manually changed.
+    * @param {Vector2} force Vector2 representing the force to be applied.
+    */
     applyForce(force) {
-        
+        this.acceleration = this.acceleration.add(force.scalarDiv(this.mass));
     }
 }

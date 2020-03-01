@@ -10,25 +10,46 @@ export class Vector2 {
     }
 
     scalarMult(scalar) {
-        newX *= scalar;
-        newY *= scalar;
+        var newX = this.x * scalar;
+        var newY = this.y * scalar;
 
         return new Vector2(newX, newY);
     }
 
     scalarDiv(scalar) {
-        newX /= scalar;
-        newY /= scalar;
+        var newX = this.x / scalar;
+        var newY = this.y / scalar;
 
         return new Vector2(newX, newY);
     }
 
     dot(vector) {
-        
+        return (this.x * vector.x) + (this.y * vector.y);
+    }
+
+    cross(vector) {
+        var newX = this.x * vector.y;
+        var newY = -(this.y * vector.x);
+
+        return new Vector2(newX, newY);
+    }
+
+    add(vector) {
+        var newX = this.x + vector.x;
+        var newY = this.y + vector.y;
+
+        return new Vector2(newX, newY);
+    }
+
+    subtract(vector) {
+        var newX = this.x - vector.x;
+        var newY = this.y - vector.y;
+
+        return new Vector2(newX, newY);
     }
 
     get direction() {
-        arctan = Math.atan(this.y / this.x); //The inverse tangnet of y / x
+        var arctan = Math.atan(this.y / this.x); //The inverse tangnet of y / x
 
         if (this.x == 0) {
             if (this.y == 0) {

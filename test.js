@@ -1,4 +1,5 @@
 import { Vector2 } from './Vector2.js';
+import { PhysObject } from './PhysObject.js';
 
 var vector = new Vector2(1, 0);
 console.log(vector.direction * 180 / Math.PI);//0
@@ -27,3 +28,5 @@ console.log(vector.direction * 180 / Math.PI);//315
 vector.y = 0;
 vector.x = 0;
 console.log(vector.direction * 180 / Math.PI);//null
+
+new PhysObject().

@@ -1,6 +1,8 @@
 import { Vector2 } from './Vector2.js';
 
-//Physical object that can be affected by forces
+/**
+ * 2 dimensional physics object that can be affected by forces.
+ */
 export class PhysObject {
     /**
      * Create PhysObject
@@ -9,14 +11,16 @@ export class PhysObject {
      * @param {number}  gravity        Acceleration of the object due to gravity. Defaults to 0.0.
      * @param {Vector2} acceleration   Acceleration of the object. Defaults to (0, 0).
      * @param {number}  mass           Mass of the object. Defaults to 1.0.
+     * @param {boolean} collider       Boolean determining whether this object collides with other objects. Defaults to false.
      */
     constructor(position = new Vector2(0,0), velocity = new Vector2(0,0),
-    acceleration = new Vector2(0,0), gravity = 0, mass = 1) {
+    acceleration = new Vector2(0,0), gravity = 0, mass = 1, collider = false) {
         this.position = position;
         this.gravity = gravity;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+        this.collider = collider
     }
 
     /**

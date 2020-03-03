@@ -1,5 +1,4 @@
-import { Vector2 } from './Vector2.js';
-import { PhysObject } from './PhysObject.js';
+import { Vector2 } from '../Vector2.js';
 
 var vector = new Vector2(1, 0);
 console.log(vector.direction * 180 / Math.PI);//0

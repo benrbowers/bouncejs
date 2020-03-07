@@ -15,7 +15,7 @@ export class Ball extends PhysObject {
 
     /**
      * Draws this ball on a canvas.
-     * @param {CanvasRenderingContext2D} canvas2D   2D canvas context for drawing ball.
+     * @param {CanvasRenderingContext2D} canvas2D - 2D canvas context for drawing ball.
      */
     draw(canvas2D) {
         canvas2D.beginPath();

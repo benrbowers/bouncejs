@@ -1,4 +1,4 @@
-import { PhysObject } from "./PhysObject";
+import { Ball } from "./Ball.js";
 
 /**
  * Physics engine that handles physics objects
@@ -6,18 +6,24 @@ import { PhysObject } from "./PhysObject";
 class Engine {
     /**
      * Creates engine
-     * @param {CanvasRenderingContext2D} canvas        - Canvas to draw objects on.
-     * @param {Array}                    physObjects   - Array of physics objects in the engine.
+     * @param {HTMLCanvasElement}        canvas        - Canvas to draw objects on.
+     * @param {number}                   width         - Width of canvas.
+     * @param {number}                   height        - Height of canvas.
      * @param {String}                   backgrndColor - CSS color value.
+     * @param {Array.<Ball>}             physObjects   - Array of physics objects in the engine.
      */
-    constructor(canvas, physObjects, backgrndColor) {
+    constructor(canvas, backgrndColor, physObjects = new Array(0)) {
         this.canvas = canvas;
-        this.physObjects = physObjects;
         this.backgrndColor = backgrndColor;
+        this.physObjects = physObjects;
+        this.
     }
 
     start() {
+        this.canvas.fillStyle = this.backgrndColor;
+        this.canvas.fillRect(0, 0)
         for (var i = 0; i < this.physObjects.length; i++) {
+            this.physObjects[i].draw(this.canvas);
             for(var j = 0; j < this.physObjects.length; j++) {
                 var ball1 = this.physObjects[i];
                 var ball2 = this.physObjects[j];
@@ -29,9 +35,14 @@ class Engine {
                     var v1 = ball1.velocity;
                     var v2 = ball2.velocity;
 
-                    var 
-                }
-            }
-        }
+                    ball1.velocity.x = (((m1 - m2) / (m1 + m2)) * v1.x) + (((2 * m2) / (m1 + m2)) * v2.x);
+                    ball1.velocity.y = (((m1 - m2) / (m1 + m2)) * v1.y) + (((2 * m2) / (m1 + m2)) * v2.y);
+                    ball2.velocity.x = (((m2 - m1) / (m1 + m2)) * v2.x) + (((2 * m1) / (m1 + m2)) * v1.x);
+                    ball2.velocity.y = (((m2 - m1) / (m1 + m2)) * v2.y) + (((2 * m1) / (m1 + m2)) * v1.y);
+                }//end if
+            }//end for
+        }//end for
+
+
     }
 }

@@ -125,4 +125,19 @@ export class Vector2 {
             return 2 * Math.PI + arctan;
         }//End else
     }//End direction()
+
+    /**
+     * Returns the distance between the end of this vector and another vector.
+     * @param   {Vector2} vector - The other vector.
+     * @returns {number}         The distance.
+     */
+    distance(vector) {
+        var x1 = this.x;
+        var x2 = vector.x;
+        var y1 = this.y;
+        var y2 = vector.y;
+
+        var dist = Math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2));
+        return dist;
+    }
 }//End Vector2

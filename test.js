@@ -6,18 +6,10 @@ var date = new Date();
 var speed = 0.01;
 
 var ball = new Ball(30, 'red');
-ball.position = new Vector2(150, 150);
-var i = 0;
+ball.position = new Vector2(50, 50);
+ball.draw(canvas2D);
 
-function start() {
-    canvas2D.fillStyle = 'white';
-    canvas2D.fillRect(0, 0, 300, 300);
+ball.position = new Vector2(100, 100);
+ball.color = 'blue';
+ball.draw(canvas2D);
 
-    ball.position.y = 100 * Math.sin(i += 0.1) + 150;
-    console.log(Date.now());
-    ball.draw(canvas2D);
-
-    requestAnimationFrame(start);
-}
-
-start();

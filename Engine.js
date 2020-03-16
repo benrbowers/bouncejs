@@ -1,4 +1,5 @@
 import { Ball } from "./Ball.js";
+import { Vector2 } from "./Vector2.js";
 
 /**
  * Physics engine that handles physics objects
@@ -37,6 +38,18 @@ class Engine {
                     var m2 = ball2.mass;
                     var v1 = ball1.velocity;
                     var v2 = ball2.velocity;
+
+                    //Distance between centers of the circles
+                    var centerDistance = Math.sqrt((ball1.position.x - ball2.position.x) ** 2 + (ball1.position.y - ball2.position.y) ** 2);
+
+                    //Normal unit vector
+                    var normal = new Vector2((ball2.position.x - ball1.position.x), (ball2.position.x - ball1.position.x));
+                    normal = normal.scalarDiv(centerDistance);
+
+                    //Tangnet unit vector
+                    var tangent = new Vector2(-normal.y, normal.x);
+                    tangent
+
 
                     ball1.velocity.x = (((m1 - m2) / (m1 + m2)) * v1.x) + (((2 * m2) / (m1 + m2)) * v2.x);
                     ball1.velocity.y = (((m1 - m2) / (m1 + m2)) * v1.y) + (((2 * m2) / (m1 + m2)) * v2.y);

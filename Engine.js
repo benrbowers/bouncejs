@@ -4,7 +4,7 @@ import { Vector2 } from "./Vector2.js";
 /**
  * Physics engine that handles physics objects
  */
-class Engine {
+export class Engine {
     /**
      * Creates engine
      * @param {HTMLCanvasElement} canvas        - Canvas to draw objects on.
@@ -19,17 +19,16 @@ class Engine {
         this.physObjects = physObjects;
         this.width = canvas.width;
         this.height = canvas.height;
+        this.timeStamp = 0;
+        this.elapsedTime = 0;
     }
 
     start() {
-        this.canvas.fillStyle = this.backgrndColor;
-        this.canvas.fillRect(0, 0)
-        for (var i = 0; i < this.physObjects.length; i++) {
-            var ball = this.physObjects[i];
-            ball.draw(this.canvas);
-
-            for (var j = 0; j < this.physObjects.length; j++) {
-                var ball1 = this.physObjects[i];
+        console.log('Start called');
+        //Check collisions with other balls
+        this.physObjects.forEach(ball1 => {
+            /*
+            this.physObjects.forEach(ball2 => {
                 var ball2 = this.physObjects[j];
                 var dist = ball1.position.distance(ball2.position);
 
@@ -48,16 +47,18 @@ class Engine {
 
                     //Tangnet unit vector
                     var tangent = new Vector2(-normal.y, normal.x);
-                    tangent
-
 
                     ball1.velocity.x = (((m1 - m2) / (m1 + m2)) * v1.x) + (((2 * m2) / (m1 + m2)) * v2.x);
                     ball1.velocity.y = (((m1 - m2) / (m1 + m2)) * v1.y) + (((2 * m2) / (m1 + m2)) * v2.y);
                     ball2.velocity.x = (((m2 - m1) / (m1 + m2)) * v2.x) + (((2 * m1) / (m1 + m2)) * v1.x);
                     ball2.velocity.y = (((m2 - m1) / (m1 + m2)) * v2.y) + (((2 * m1) / (m1 + m2)) * v1.y);
                 }//end if
-            }//end for
+            });//end forEach
+            */
+        });//end forEach
 
+        //Check collisions with walls (borders of canvas)
+        this.physObjects.forEach(ball => {
             if (ball.position.x - ball.radius < 0) {
                 ball.velocity.x = - ball.velocity.x;
             }//end if
@@ -73,6 +74,34 @@ class Engine {
             if (ball.position.y + ball.radius > this.height) {
                 ball.velocity.y = - ball.velocity.y;
             }//end if
-        }//end for
+        });//end forEach
+
+        //Time since last update
+        this.elapsedTime = Date.now() - this.timeStamp;
+        this.timeStamp = Date.now();
+
+         //Update positions of balls
+         this.physObjects.forEach(ball => {
+            ball.position.x += ball.velocity.x * this.elapsedTime;
+            ball.position.y += ball.velocity.y * this.elapsedTime;
+        });
+
+        this.canvas.fillStyle = this.backgrndColor;
+        this.canvas.fillRect(0, 0, this.width, this.height);
+        //Draw the balls
+        this.physObjects.forEach(ball => {
+            ball.draw(this.canvas);
+            console.log('Ball drawn.')
+        })
+        //requestAnimationFrame(this.start.bind(this));
     }//end start()
+
+    /**
+     * Adds another object to the engine
+     * @param {Ball} physObject 
+     */
+    add(physObject) {
+        this.physObjects.push(physObject);
+        physObject.draw(this.canvas);
+    }
 }//end Engine

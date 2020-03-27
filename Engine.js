@@ -24,22 +24,25 @@ export class Engine {
     }
 
     start() {
-        console.log('Start called');
         //Check collisions with other balls
         this.physObjects.forEach(ball1 => {
-            /*
             this.physObjects.forEach(ball2 => {
-                var ball2 = this.physObjects[j];
                 var dist = ball1.position.distance(ball2.position);
 
-                if (dist < ball1.radius + ball2.radius && ball1 != ball2) {
-                    var m1 = ball1.mass;
-                    var m2 = ball2.mass;
-                    var v1 = ball1.velocity;
-                    var v2 = ball2.velocity;
+                if (dist < ball1.radius + ball2.radius && ball1 !== ball2) {
+                    console.log('Collision');
 
+                    //Handle overlap
+                    var overlap = (ball1.radius + ball2.radius - dist) / 2;
+                    
+                    ball1.position.x -= overlap / dist * (ball2.position.x - ball1.position.x);
+                    ball1.position.y -= overlap / dist * (ball2.position.y - ball1.position.y);
+                    ball2.position.x -= overlap / dist * (ball1.position.x - ball2.position.x);
+                    ball2.position.y -= overlap / dist * (ball1.position.y - ball2.position.y);
+
+                    
                     //Distance between centers of the circles
-                    var centerDistance = Math.sqrt((ball1.position.x - ball2.position.x) ** 2 + (ball1.position.y - ball2.position.y) ** 2);
+                    var centerDistance = ball1.position.distance(ball2.position);
 
                     //Normal unit vector
                     var normal = new Vector2((ball2.position.x - ball1.position.x), (ball2.position.x - ball1.position.x));
@@ -48,40 +51,58 @@ export class Engine {
                     //Tangnet unit vector
                     var tangent = new Vector2(-normal.y, normal.x);
 
-                    ball1.velocity.x = (((m1 - m2) / (m1 + m2)) * v1.x) + (((2 * m2) / (m1 + m2)) * v2.x);
-                    ball1.velocity.y = (((m1 - m2) / (m1 + m2)) * v1.y) + (((2 * m2) / (m1 + m2)) * v2.y);
-                    ball2.velocity.x = (((m2 - m1) / (m1 + m2)) * v2.x) + (((2 * m1) / (m1 + m2)) * v1.x);
-                    ball2.velocity.y = (((m2 - m1) / (m1 + m2)) * v2.y) + (((2 * m1) / (m1 + m2)) * v1.y);
+                    var v1 = new Vector2(ball1.velocity.dot(normal), ball1.velocity.dot(tangent));
+                    var v2 = new Vector2(ball2.velocity.dot(normal), ball2.velocity.dot(tangent));
+                    var m1 = ball1.mass;
+                    var m2 = ball2.mass;
+
+                    var v1x = (((m1 - m2) * v1.x) + (2 * m2 * v2.x)) / (m1 + m2);
+                    var v2x = (((m2 - m1) * v2.x) + (2 * m1 * v1.x)) / (m1 + m2);
+
+                    v1.x = v1x;
+                    v2.x = v2x;
+
+                    //Update ball velocities
+                    ball1.velocity.x = tangent.x * v1.y + normal.x * v1.x;
+                    ball1.velocity.y = tangent.y * v1.y + normal.y * v1.x;
+                    ball2.velocity.x = tangent.x * v2.y + normal.x * v2.x;
+                    ball2.velocity.y = tangent.y * v2.y + normal.y * v2.x;
+
                 }//end if
             });//end forEach
-            */
         });//end forEach
 
         //Check collisions with walls (borders of canvas)
         this.physObjects.forEach(ball => {
             if (ball.position.x - ball.radius < 0) {
+                ball.position.x += ball.radius - ball.position.x;
                 ball.velocity.x = - ball.velocity.x;
             }//end if
 
             if (ball.position.x + ball.radius > this.width) {
+                ball.position.x -= ball.radius - (this.width - ball.position.x);
                 ball.velocity.x = - ball.velocity.x;
             }//end if
 
             if (ball.position.y - ball.radius < 0) {
+                ball.position.y += ball.radius - ball.position.y;
                 ball.velocity.y = - ball.velocity.y;
             }//end if
 
             if (ball.position.y + ball.radius > this.height) {
+                ball.position.y -= ball.radius - (this.height - ball.position.y);
                 ball.velocity.y = - ball.velocity.y;
             }//end if
         });//end forEach
 
         //Time since last update
-        this.elapsedTime = Date.now() - this.timeStamp;
+        if (this.timeStamp != 0) {
+            this.elapsedTime = Date.now() - this.timeStamp;
+        }
         this.timeStamp = Date.now();
 
-         //Update positions of balls
-         this.physObjects.forEach(ball => {
+        //Update positions of balls
+        this.physObjects.forEach(ball => {
             ball.position.x += ball.velocity.x * this.elapsedTime;
             ball.position.y += ball.velocity.y * this.elapsedTime;
         });
@@ -91,9 +112,8 @@ export class Engine {
         //Draw the balls
         this.physObjects.forEach(ball => {
             ball.draw(this.canvas);
-            console.log('Ball drawn.')
         })
-        //requestAnimationFrame(this.start.bind(this));
+        requestAnimationFrame(this.start.bind(this));
     }//end start()
 
     /**

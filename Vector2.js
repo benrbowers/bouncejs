@@ -5,7 +5,7 @@ export class Vector2 {
      * @param {number} x    The x component of the vector.
      * @param {number} y    The y component of the vector.
      */
-    constructor(x, y) {
+    constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -14,7 +14,7 @@ export class Vector2 {
      * The magnitude of the vector.
      */
     get magnitude() {
-        return Math.sqrt(Math.pow(x, 2) * Math.pow(y, 2));
+        return Math.sqrt((this.x ** 2) + (this.y ** 2));
     }
 
     /**
@@ -90,41 +90,48 @@ export class Vector2 {
      * The direction of the vector in radians measured counter-clockwise from the positive x-axis.
      */
     get direction() {
-        var arctan = Math.atan(this.y / this.x); //The inverse tangnet of y / x
+        var arctan = Math.atan(this.y / this.x); // The inverse tangnet of y / x
 
         if (this.x == 0) {
             if (this.y == 0) {
                 return null;
-            }//End if
+            }// End if
             else if (this.y > 0) {
                 return Math.PI / 2;
-            }//End else if
+            }// End else if
             else {
                 return 3 * Math.PI / 2;
-            }//End else
-        }//End if
+            }// End else
+        }// End if
 
         else if (this.y == 0) {
             if (this.x > 0) {
                 return 0.0;
-            }//End if
+            }// End if
             else {
                 return Math.PI;
-            }//End else
-        }//End else if
+            }// End else
+        }// End else if
 
         else if (this.x < 0) {
             return Math.PI + arctan;
-        }//End else
+        }// End else
 
         else if (this.y > 0) {
             return arctan;
-        }//End else if
+        }// End else if
 
         else {
             return 2 * Math.PI + arctan;
-        }//End else
-    }//End direction()
+        }// End else
+    }// End direction()
+
+    /**
+     * The unit vector defined by this vector (i.e., a vector with the same direction and a magnitude of 1.0)
+     */
+    get unit() {
+        return this.scalarDiv(this.magnitude);
+    }
 
     /**
      * Returns the distance between the end of this vector and another vector.

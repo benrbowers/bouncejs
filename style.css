@@ -1,3 +1,7 @@
 canvas {
     border-style: solid;
 }
+
+input {
+    display: inline-block;
+}

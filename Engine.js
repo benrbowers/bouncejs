@@ -35,6 +35,9 @@ export class Engine {
         canvas.onmousedown = this.onMouseDown.bind(this);
         canvas.onmouseup = this.onMouseUp.bind(this);
         canvas.onmousemove = this.onMouseMove.bind(this);
+        canvas.ontouchstart = this.onTouchStart.bind(this);
+        canvas.ontouchend = this.onMouseUp.bind(this);
+        canvas.ontouchmove = this.onTouchMove.bind(this);
     }
 
     onMouseMove(event) {
@@ -44,6 +47,7 @@ export class Engine {
         
         this.mousePos.x = event.pageX - rect.left;
         this.mousePos.y = event.pageY - rect.top;
+        console.log(this.mousePos.x);
 
         //Time since last mouse movement
         if (this.mouseTimeStamp != 0) {
@@ -76,14 +80,52 @@ export class Engine {
         }
 
 
-        if (this.mouseElapsedTime < 0.03) {
-            this.selectedObject.velocity = new Vector2(this.mouseVel.x, this.mouseVel.y);
-        } else {
-            this.selectedObject.velocity = new Vector2(0, 0);
-        }
+        if (this.selectedObject !== null) {
+            if (this.mouseElapsedTime < 0.03) {
+                this.selectedObject.velocity = new Vector2(this.mouseVel.x, this.mouseVel.y);
+            } else {
+                this.selectedObject.velocity = new Vector2(0, 0);
+            }
 
-        console.log(this.selectedObject.velocity.magnitude);
-        this.selectedObject = null;
+            console.log(this.selectedObject.velocity.magnitude);
+            this.selectedObject = null;
+        }
+    }
+
+    onTouchMove(event) {
+        var rect = this.canvas.canvas.getBoundingClientRect();
+        
+        var oldMousePos = new Vector2(this.mousePos.x, this.mousePos.y);
+        
+        this.mousePos.x = event.touches[0].pageX - rect.left;
+        this.mousePos.y = event.touches[0].pageY - rect.top;
+        console.log(this.mousePos.x);
+
+        //Time since last mouse movement
+        if (this.mouseTimeStamp != 0) {
+            this.mouseElapsedTime = (Date.now() - this.mouseTimeStamp) / 1000;
+            //console.log('elapsed time: ' + this.mouseElapsedTime);
+        }
+        this.mouseTimeStamp = Date.now();
+
+        this.mouseVel = this.mousePos.subtract(oldMousePos).scalarDiv(this.mouseElapsedTime);
+    }
+
+    onTouchStart(event) {
+        console.log('press');
+        this.mouseHeld = true;
+
+        var rect = this.canvas.canvas.getBoundingClientRect();
+
+        this.mousePos.x = event.touches[0].pageX - rect.left;
+        this.mousePos.y = event.touches[0].pageY - rect.top;
+        console.log(this.mousePos.y);
+
+        this.physObjects.forEach(ball => {
+            if (ball.position.distance(this.mousePos) < ball.radius) {
+                this.selectedObject = ball;
+            }
+        });
     }
 
     start() {

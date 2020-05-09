@@ -3,11 +3,11 @@ import { Ball } from './Ball.js';
 import { Engine } from './Engine.js';
 
 var canvas = document.querySelector('canvas');
-canvas.width = window.innerWidth - 10;
+canvas.width = window.innerWidth;
 canvas.height = window.innerHeight / 2;
 var gravity = 300;
 var gravityOn = true;
-var engine = new Engine(canvas, 'pink', 0);
+var engine = new Engine(canvas, '#1E1E1E', 0);
 
 for (var theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / 10) {
     var ball = new Ball(50, 'blue');
@@ -43,4 +43,3 @@ var switchGravity = function() {
 }
 
 check.onclick = switchGravity;
-

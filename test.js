@@ -9,17 +9,6 @@ var gravity = 300;
 var gravityOn = true;
 var engine = new Engine(canvas, '#1E1E1E', 0);
 
-engine.onMouseDown = function (event) {
-    console.log('press');
-    this.mouseHeld = true;
-
-    this.physObjects.forEach(ball => {
-        if (ball.position.distance(this.mousePos) < ball.radius) {
-            this.selectedObject = ball;
-        }
-    });
-};
-
 for (var theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / 10) {
     var ball = new Ball(50, 'blue');
     ball.position = new Vector2(375 + 300 * Math.cos(theta), 375 + 300 * Math.sin(theta));
@@ -30,6 +19,37 @@ for (var theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / 10) {
     ball.drag = 0.1;
     engine.add(ball);
 }
+
+engine.setOnObjectRelease(function () {
+    console.log('poop');
+    if (engine.selectedObject !== null) {
+
+        console.log('boop');
+
+        //Time since last mouse movement
+        if (engine.mouseTimeStamp != 0) {
+            engine.mouseElapsedTime = (Date.now() - engine.mouseTimeStamp) / 1000;
+        }
+
+        if (engine.mouseElapsedTime < 0.03) { //Ensure a recent velocity is used
+            engine.selectedObject.velocity = new Vector2(engine.mouseVel.x, engine.mouseVel.y);
+        } else {
+            engine.selectedObject.velocity = new Vector2(0, 0);
+        }
+    }
+});
+
+engine.setOnObjectPress(function () {
+    console.log('Object Pressed')
+});
+
+engine.setWhileObjectHeld(function() {
+    engine.selectedObject.velocity.x = 0;
+    engine.selectedObject.velocity.y = 0;
+
+    engine.selectedObject.position.x = this.mousePos.x;
+    engine.selectedObject.position.y = this.mousePos.y;
+});
 
 engine.start();
 

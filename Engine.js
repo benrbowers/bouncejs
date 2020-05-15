@@ -32,9 +32,15 @@ export class Engine {
         this.mouseHeld = false;
         this.mousePos = new Vector2();
         this.mouseVel = new Vector2();
-        this.onMouseHold = function() {};
-        //canvas.onmousedown = this.onMouseDown.bind(this);
+        
+        this.onObjectPress = function () {};
+        this.onObjectRelease = function() {};
+        this.whileObjectHeld = function() {};
+
+        canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight); //Ensure correct aspect ratio of canvas
+        
         canvas.onmouseup = this.onMouseUp.bind(this);
+        canvas.onmousedown = this.onMouseDown.bind(this);
         canvas.onmousemove = this.onMouseMove.bind(this);
         canvas.ontouchstart = this.onTouchStart.bind(this);
         canvas.ontouchend = this.onMouseUp.bind(this);
@@ -48,7 +54,6 @@ export class Engine {
         
         this.mousePos.x = event.pageX - rect.left;
         this.mousePos.y = event.pageY - rect.top;
-        console.log(this.mousePos.x);
 
         //Time since last mouse movement
         if (this.mouseTimeStamp != 0) {
@@ -60,44 +65,62 @@ export class Engine {
         this.mouseVel = this.mousePos.subtract(oldMousePos).scalarDiv(this.mouseElapsedTime);
     }
 
-    /*onMouseDown() {
+    /**
+     * Allows user to add functionality to onMouseMove
+     * @param {Function} userFunction
+     */
+    setOnMouseMove(userFunction) {
+        let move = this.onMouseMove.bind(this);
+        this.canvas.onmousemove = function (event) {
+            move(event);
+            userFunction();
+        };
+    }
+
+    onMouseDown() {
         console.log('press');
         this.mouseHeld = true;
 
         this.physObjects.forEach(ball => {
             if (ball.position.distance(this.mousePos) < ball.radius) {
                 this.selectedObject = ball;
+                this.onObjectPress();
             }
         });
-    }*/
+    }
 
     /**
+     * Allows user to add functionality to onMouseDown
      * @param {Function} userFunction
      */
-    set onMouseDown(userFunction) {
-        this.canvas.onmousedown = userFunction.bind(this);
+    setOnMouseDown(userFunction) {
+        let down = this.onMouseDown.bind(this);
+        this.canvas.onmousedown = function () {
+            down();
+            userFunction();
+        };
     }
 
     onMouseUp() {
         console.log('release');
         this.mouseHeld = false;
-        //Time since last mouse movement
-        if (this.mouseTimeStamp != 0) {
-            this.mouseElapsedTime = (Date.now() - this.mouseTimeStamp) / 1000;
-            //console.log('elapsed time: ' + this.mouseElapsedTime);
-        }
-
 
         if (this.selectedObject !== null) {
-            if (this.mouseElapsedTime < 0.03) {
-                this.selectedObject.velocity = new Vector2(this.mouseVel.x, this.mouseVel.y);
-            } else {
-                this.selectedObject.velocity = new Vector2(0, 0);
-            }
-
-            console.log(this.selectedObject.velocity.magnitude);
+            this.onObjectRelease();
             this.selectedObject = null;
         }
+    }
+
+    /**
+     * Allows user to add functionality to onMouseUp
+     * @param {Function} userFunction
+     */
+    setOnMouseUp(userFunction) {
+        let up = this.onMouseUp.bind(this);
+        this.canvas.onmouseup = function () {
+            up();
+            userFunction();
+        };
     }
 
     onTouchMove(event) {
@@ -112,11 +135,22 @@ export class Engine {
         //Time since last mouse movement
         if (this.mouseTimeStamp != 0) {
             this.mouseElapsedTime = (Date.now() - this.mouseTimeStamp) / 1000;
-            //console.log('elapsed time: ' + this.mouseElapsedTime);
         }
         this.mouseTimeStamp = Date.now();
 
         this.mouseVel = this.mousePos.subtract(oldMousePos).scalarDiv(this.mouseElapsedTime);
+    }
+
+    /**
+     * Allows user to add functionality to onTouchMove
+     * @param {Function} userFunction
+     */
+    setOnTouchMove(userFunction) {
+        let move = this.onTouchMove.bind(this);
+        this.canvas.ontouchmove = function (event) {
+            move(event);
+            userFunction();
+        };
     }
 
     onTouchStart(event) {
@@ -132,21 +166,52 @@ export class Engine {
         this.physObjects.forEach(ball => {
             if (ball.position.distance(this.mousePos) < ball.radius) {
                 this.selectedObject = ball;
+                this.onObjectPress();
             }
         });
+    }
+
+    /**
+     * Allows user to add functionality to onTouchStart
+     * @param {Function} userFunction
+     */
+    setOnTouchMove(userFunction) {
+        let touchStart = this.onTouchStart.bind(this);
+        this.canvas.ontouchmove = function (event) {
+            touchStart(event);
+            userFunction();
+        };
+    }
+
+    /**
+     * Sets onObjectPress to the specified function
+     * @param {Function} userFunction 
+     */
+    setOnObjectPress(userFunction) {
+        this.onObjectPress = userFunction;
+    }
+
+    /**
+     * Sets onObjectRelease to the specified function
+     * @param {Function} userFunction 
+     */
+    setOnObjectRelease(userFunction) {
+        this.onObjectRelease = userFunction;
+    }
+
+    /**
+     * Sets whileObjectHeld to the specified function
+     * @param {Function} userFunction 
+     */
+    setWhileObjectHeld(userFunction) {
+        this.whileObjectHeld = userFunction;
     }
 
     start() {
 
         if (this.mouseHeld) {
-            console.log('held');
-
             if (this.selectedObject !== null) {
-                this.selectedObject.velocity.x = 0;
-                this.selectedObject.velocity.y = 0;
-
-                this.selectedObject.position.x = this.mousePos.x;
-                this.selectedObject.position.y = this.mousePos.y;
+                this.whileObjectHeld();
             }
         }
 

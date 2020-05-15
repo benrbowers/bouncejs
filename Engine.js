@@ -217,61 +217,66 @@ export class Engine {
 
         // Check collisions with other balls
         this.physObjects.forEach(ball1 => {
-            if (ball1.doesCollide) {
+            if (ball1.collidesWithObjects) {
                 this.physObjects.forEach(ball2 => {
-                    var dist = ball1.position.distance(ball2.position);
+                    if (ball2.collidesWithObjects) {
+                        var dist = ball1.position.distance(ball2.position);
 
-                    if (ball1 !== ball2 && dist < ball1.radius + ball2.radius) {
-                        //console.log('Collision');
+                        if (ball1 !== ball2 && dist < ball1.radius + ball2.radius) {
+                            //console.log('Collision');
 
-                        // Handle overlap
-                        var overlap = (ball1.radius + ball2.radius - dist) / 2;
+                            // Handle overlap
+                            var overlap = (ball1.radius + ball2.radius - dist) / 2;
 
-                        ball1.position.x -= overlap / dist * (ball2.position.x - ball1.position.x);
-                        ball1.position.y -= overlap / dist * (ball2.position.y - ball1.position.y);
-                        ball2.position.x -= overlap / dist * (ball1.position.x - ball2.position.x);
-                        ball2.position.y -= overlap / dist * (ball1.position.y - ball2.position.y);
+                            ball1.position.x -= overlap / dist * (ball2.position.x - ball1.position.x);
+                            ball1.position.y -= overlap / dist * (ball2.position.y - ball1.position.y);
+                            ball2.position.x -= overlap / dist * (ball1.position.x - ball2.position.x);
+                            ball2.position.y -= overlap / dist * (ball1.position.y - ball2.position.y);
 
-                        // Distance between centers of the circles
-                        var centerDistance = ball1.position.distance(ball2.position);
+                            // Distance between centers of the circles
+                            var centerDistance = ball1.position.distance(ball2.position);
 
-                        // Normal unit vector
-                        var normal = new Vector2((ball2.position.x - ball1.position.x), (ball2.position.y - ball1.position.y));
-                        normal = normal.scalarDiv(centerDistance);
+                            // Normal unit vector
+                            var normal = new Vector2((ball2.position.x - ball1.position.x), (ball2.position.y - ball1.position.y));
+                            normal = normal.scalarDiv(centerDistance);
 
-                        // Tangnet unit vector
-                        var tangent = new Vector2(-normal.y, normal.x);
+                            // Tangnet unit vector
+                            var tangent = new Vector2(-normal.y, normal.x);
 
-                        // Get velocities in new coordinates by dotting with the normal and tangent
-                        var v1 = new Vector2(ball1.velocity.dot(normal), ball1.velocity.dot(tangent));
-                        var v2 = new Vector2(ball2.velocity.dot(normal), ball2.velocity.dot(tangent));
-                        var m1 = ball1.mass;
-                        var m2 = ball2.mass;
+                            // Get velocities in new coordinates by dotting with the normal and tangent
+                            var v1 = new Vector2(ball1.velocity.dot(normal), ball1.velocity.dot(tangent));
+                            var v2 = new Vector2(ball2.velocity.dot(normal), ball2.velocity.dot(tangent));
+                            var m1 = ball1.mass;
+                            var m2 = ball2.mass;
 
-                        // Calculate the new normal velocities using 1D conservation of momentum
-                        var v1x = (((m1 - m2) * v1.x) + (2 * m2 * v2.x)) / (m1 + m2);
-                        var v2x = (((m2 - m1) * v2.x) + (2 * m1 * v1.x)) / (m1 + m2);
-                        v1.x = v1x;
-                        v2.x = v2x;
+                            // Calculate the new normal velocities using 1D conservation of momentum
+                            var v1x = (((m1 - m2) * v1.x) + (2 * m2 * v2.x)) / (m1 + m2);
+                            var v2x = (((m2 - m1) * v2.x) + (2 * m1 * v1.x)) / (m1 + m2);
+                            v1.x = v1x;
+                            v2.x = v2x;
 
-                        // x and y axes from the perspective of the new coordinates
-                        var xAxis = new Vector2(normal.x, -normal.y);
-                        var yAxis = new Vector2(-tangent.x, tangent.y);
+                            // x and y axes from the perspective of the new coordinates
+                            var xAxis = new Vector2(normal.x, -normal.y);
+                            var yAxis = new Vector2(-tangent.x, tangent.y);
 
-                        // Update ball velocities
-                        ball1.velocity.x = v1.dot(xAxis);
-                        ball1.velocity.y = v1.dot(yAxis);
-                        ball2.velocity.x = v2.dot(xAxis);
-                        ball2.velocity.y = v2.dot(yAxis);
+                            // Update ball velocities
+                            ball1.velocity.x = v1.dot(xAxis);
+                            ball1.velocity.y = v1.dot(yAxis);
+                            ball2.velocity.x = v2.dot(xAxis);
+                            ball2.velocity.y = v2.dot(yAxis);
 
-                        // javidx9 way to Update ball velocities
-                        // ball1.velocity.x = tangent.x * v1.y + normal.x * v1.x;
-                        // ball1.velocity.y = tangent.y * v1.y + normal.y * v1.x;
-                        // ball2.velocity.x = tangent.x * v2.y + normal.x * v2.x;
-                        // ball2.velocity.y = tangent.y * v2.y + normal.y * v2.x;
+                            ball1.onObjectCollison();
+                            ball2.onObjectCollison();
+
+                            // javidx9 way to Update ball velocities
+                            // ball1.velocity.x = tangent.x * v1.y + normal.x * v1.x;
+                            // ball1.velocity.y = tangent.y * v1.y + normal.y * v1.x;
+                            // ball2.velocity.x = tangent.x * v2.y + normal.x * v2.x;
+                            // ball2.velocity.y = tangent.y * v2.y + normal.y * v2.x;
 
 
 
+                        }// end if
                     }// end if
                 });// end forEach
             }// end if
@@ -279,24 +284,30 @@ export class Engine {
 
         // Check collisions with walls (borders of canvas)
         this.physObjects.forEach(ball => {
-            if (ball.position.x - ball.radius < 0) {
-                ball.position.x += ball.radius - ball.position.x;
-                ball.velocity.x = - ball.velocity.x;
-            }// end if
+            if (ball.collidesWithWalls) {
+                if (ball.position.x - ball.radius < 0) {
+                    ball.position.x += ball.radius - ball.position.x;
+                    ball.velocity.x = - ball.velocity.x;
+                    ball.onWallCollision();
+                }// end if
 
-            if (ball.position.x + ball.radius > this.width) {
-                ball.position.x -= ball.radius - (this.width - ball.position.x);
-                ball.velocity.x = - ball.velocity.x;
-            }//end if
+                if (ball.position.x + ball.radius > this.width) {
+                    ball.position.x -= ball.radius - (this.width - ball.position.x);
+                    ball.velocity.x = - ball.velocity.x;
+                    ball.onWallCollision();
+                }//end if
 
-            if (ball.position.y - ball.radius < 0) {
-                ball.position.y += ball.radius - ball.position.y;
-                ball.velocity.y = - ball.velocity.y;
-            }//end if
+                if (ball.position.y - ball.radius < 0) {
+                    ball.position.y += ball.radius - ball.position.y;
+                    ball.velocity.y = - ball.velocity.y;
+                    ball.onWallCollision();
+                }//end if
 
-            if (ball.position.y + ball.radius > this.height) {
-                ball.position.y -= ball.radius - (this.height - ball.position.y);
-                ball.velocity.y = - ball.velocity.y;
+                if (ball.position.y + ball.radius > this.height) {
+                    ball.position.y -= ball.radius - (this.height - ball.position.y);
+                    ball.velocity.y = - ball.velocity.y;
+                    ball.onWallCollision();
+                }//end if
             }//end if
         });//end forEach
 
@@ -333,6 +344,18 @@ export class Engine {
         })
         requestAnimationFrame(this.start.bind(this));
     }//end start()
+
+    /**
+     * 
+     * @param {Function} userFunction 
+     */
+    setOnFrame(userFunction) {
+        let oldStart = this.start.bind(this);
+        this.start = function () {
+            oldStart();
+            userFunction();
+        }
+    }
 
     /**
      * Adds another object to the engine

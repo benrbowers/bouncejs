@@ -14,14 +14,17 @@ export class PhysObject {
      * @param {boolean} doesCollide    Boolean determining whether this object collides with other objects. Defaults to false.
      */
     constructor(position = new Vector2(0,0), velocity = new Vector2(0,0),
-    acceleration = new Vector2(0,0), gravity = 0, mass = 1, drag = 0, doesCollide = true) {
+    acceleration = new Vector2(0,0), gravity = 0, mass = 1, drag = 0, collidesWithObjects = true, collidesWithWalls = true) {
         this.position = position;
         this.gravity = gravity;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
         this.drag = drag;
-        this.doesCollide = doesCollide;
+        this.collidesWithObjects = collidesWithObjects;
+        this.collidesWithWalls = collidesWithWalls;
+        this.onObjectCollison = function () {};
+        this.onWallCollision = function () {};
     }
 
     /**

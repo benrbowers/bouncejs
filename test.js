@@ -21,10 +21,7 @@ for (var theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / 10) {
 }
 
 engine.setOnObjectRelease(function () {
-    console.log('poop');
     if (engine.selectedObject !== null) {
-
-        console.log('boop');
 
         //Time since last mouse movement
         if (engine.mouseTimeStamp != 0) {

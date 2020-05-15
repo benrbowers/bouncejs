@@ -17,7 +17,8 @@ export class Engine {
     constructor(canvas, backgrndColor, borderWidth = 0, physObjects = new Array(0)) {
         canvas.style.borderWidth = borderWidth + 'px';
 
-        this.canvas = canvas.getContext('2d');
+        this.canvas = canvas;
+        this.canvas2D = this.canvas.getContext('2d');
         this.backgrndColor = backgrndColor;
         this.borderWidth = borderWidth;
         this.physObjects = physObjects;
@@ -32,7 +33,7 @@ export class Engine {
         this.mousePos = new Vector2();
         this.mouseVel = new Vector2();
         this.onMouseHold = function() {};
-        canvas.onmousedown = this.onMouseDown.bind(this);
+        //canvas.onmousedown = this.onMouseDown.bind(this);
         canvas.onmouseup = this.onMouseUp.bind(this);
         canvas.onmousemove = this.onMouseMove.bind(this);
         canvas.ontouchstart = this.onTouchStart.bind(this);
@@ -41,7 +42,7 @@ export class Engine {
     }
 
     onMouseMove(event) {
-        var rect = this.canvas.canvas.getBoundingClientRect();
+        var rect = this.canvas.getBoundingClientRect();
         
         var oldMousePos = new Vector2(this.mousePos.x, this.mousePos.y);
         
@@ -59,7 +60,7 @@ export class Engine {
         this.mouseVel = this.mousePos.subtract(oldMousePos).scalarDiv(this.mouseElapsedTime);
     }
 
-    onMouseDown() {
+    /*onMouseDown() {
         console.log('press');
         this.mouseHeld = true;
 
@@ -68,6 +69,13 @@ export class Engine {
                 this.selectedObject = ball;
             }
         });
+    }*/
+
+    /**
+     * @param {Function} userFunction
+     */
+    set onMouseDown(userFunction) {
+        this.canvas.onmousedown = userFunction.bind(this);
     }
 
     onMouseUp() {
@@ -93,7 +101,7 @@ export class Engine {
     }
 
     onTouchMove(event) {
-        var rect = this.canvas.canvas.getBoundingClientRect();
+        var rect = this.canvas.getBoundingClientRect();
         
         var oldMousePos = new Vector2(this.mousePos.x, this.mousePos.y);
         
@@ -115,7 +123,7 @@ export class Engine {
         console.log('press');
         this.mouseHeld = true;
 
-        var rect = this.canvas.canvas.getBoundingClientRect();
+        var rect = this.canvas.getBoundingClientRect();
 
         this.mousePos.x = event.touches[0].pageX - rect.left;
         this.mousePos.y = event.touches[0].pageY - rect.top;
@@ -250,8 +258,9 @@ export class Engine {
             }
         });
 
-        this.canvas.fillStyle = this.backgrndColor;
-        this.canvas.fillRect(0, 0, this.width, this.height);
+        
+        this.canvas2D.fillStyle = this.backgrndColor;
+        this.canvas2D.fillRect(0, 0, this.width, this.height);
 
         //Draw the balls
         this.physObjects.forEach(ball => {
@@ -262,10 +271,10 @@ export class Engine {
 
     /**
      * Adds another object to the engine
-     * @param {Ball} physObject 
+     * @param {Ball} ball 
      */
-    add(physObject) {
-        this.physObjects.push(physObject);
-        physObject.draw(this.canvas);
+    add(ball) {
+        this.physObjects.push(ball);
+        ball.draw(this.canvas);
     }
 }//end Engine

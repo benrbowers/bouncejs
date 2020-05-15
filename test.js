@@ -9,6 +9,17 @@ var gravity = 300;
 var gravityOn = true;
 var engine = new Engine(canvas, '#1E1E1E', 0);
 
+engine.onMouseDown = function (event) {
+    console.log('press');
+    this.mouseHeld = true;
+
+    this.physObjects.forEach(ball => {
+        if (ball.position.distance(this.mousePos) < ball.radius) {
+            this.selectedObject = ball;
+        }
+    });
+};
+
 for (var theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / 10) {
     var ball = new Ball(50, 'blue');
     ball.position = new Vector2(375 + 300 * Math.cos(theta), 375 + 300 * Math.sin(theta));

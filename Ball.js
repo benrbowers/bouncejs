@@ -15,9 +15,10 @@ export class Ball extends PhysObject {
 
     /**
      * Draws this ball on a canvas.
-     * @param {CanvasRenderingContext2D} canvas2D - 2D canvas context for drawing ball.
+     * @param {HTMLCanvasElement} canvas - 2D canvas context for drawing ball.
      */
-    draw(canvas2D) {
+    draw(canvas) {
+        let canvas2D = canvas.getContext('2d');
         canvas2D.beginPath();
         canvas2D.fillStyle = this.color;
         canvas2D.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);

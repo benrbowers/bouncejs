@@ -76,6 +76,20 @@ export class Engine {
 		this.mouseVel = this.mousePos
 			.subtract(oldMousePos)
 			.scalarDiv(this.mouseElapsedTime);
+
+		if (this.selectedObject != null) {
+			//Clear text highlight
+			var sel = window.getSelection
+				? window.getSelection()
+				: document.selection;
+			if (sel) {
+				if (sel.removeAllRanges) {
+					sel.removeAllRanges();
+				} else if (sel.empty) {
+					sel.empty();
+				}
+			}
+		}
 	}
 
 	/**

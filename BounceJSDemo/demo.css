@@ -1,0 +1,197 @@
+body {
+    background-color: #252526;
+    overflow-x: hidden;
+}
+
+h1 {
+    color: white;
+    font-size: 60px;
+    margin: 0;
+    text-align: center;
+}
+
+.description {
+    color: white;
+    font-size: 28px;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.settings {
+    color: white;
+    display: inline-block;
+    margin: 25px;
+}
+
+.settings p{
+    width: 230px;
+    font-size: 28px;
+    margin: 0px;
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header {
+    font-size: 36px;
+    text-align: center;
+    margin: 0px;
+}
+
+.toggle {
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    border-radius: 28px;
+    background-color: royalblue;
+    position: relative;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.switch {
+    height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    margin: 4px;
+    background-color: white;
+    position: absolute;
+    right: 0px;
+    transition: right 0.3s;
+}
+
+.slider {
+    width: 150px;
+    display: inline-block;
+    -webkit-appearance: none;
+    height: 15px;
+    border-radius: 15px;
+    background: gray;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    background: royalblue;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    background: royalblue;
+    cursor: pointer;
+  }
+
+  .color-input {
+      background-color: #252526;
+      color: white;
+      border: 1px solid white;
+      width: 150px;
+      font-size: 20px;
+  }
+
+  .button {
+      text-align: center;
+      margin-top: 15px;
+  }
+
+  button {
+      background-color: royalblue;
+      color: white;
+      font-size: 28px;
+      border: none;
+  }
+
+  button:active {
+      position: relative;
+      top: 5px;
+  }
+
+  .physics-canvas {
+      text-align: center;
+      margin-bottom: 25px;;
+  }
+
+  @media (min-resolution: 200dpi) {
+      h1 {
+          font-size: 120px;
+      }
+
+      .description {
+          font-size: 56px;
+          width: auto;
+      }
+
+      .header {
+          font-size: 72px;
+      }
+
+      .settings p {
+          width: 400px;
+          font-size: 56px;
+      }
+
+      .toggle {
+        width: 100px;
+        height: 56px;
+        border-radius: 56px;
+    }
+    
+    .switch {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        margin: 8px;
+    }
+    
+    .slider {
+        width: 300px;
+        height: 30px;
+        border-radius: 30px;
+      }
+      
+      .slider::-webkit-slider-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+      }
+      
+      .slider::-moz-range-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+      }
+    
+      .color-input {
+          width: 300px;
+          font-size: 56px;
+      }
+
+      button {
+          font-size: 56px;
+      }
+
+      button:active {
+        position: relative;
+        top: 10px;
+    }
+  }

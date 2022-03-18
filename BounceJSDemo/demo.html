@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web Physics Demo</title>
+        <meta charset="UTF-8">
+        <link href="demo.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <h1>Web Physics</h1>
+        <p class="description">
+            This library works by drawing circles on an HTML canvas element. The base unit for this engine is a pixel, e.g. velocity is in px/s. I put together this little physics sandbox so you can get
+            a good idea of what the library is capable of. Have fun!
+        </p>
+
+        <div class="controls">
+            <div class="settings">
+                <h2 class="header">Settings</h2>
+                <div class="setting">
+                    <p>Gravity: 0.0</p><input class="slider" type="range" min="0" max="500" value="0">
+                </div>
+                <div class="setting">
+                    <p>Drag: 0.0</p><input class="slider" type="range" min="0" max="100" value="0">
+                </div>
+                <div class="setting">
+                    <p>Collisions: ON</p><div class="toggle"><div class="switch"></div></div>
+                </div>
+            </div>
+            <div class="settings ball-creator">
+                <h2 class="header">Ball Creator</h2>
+                <div class="setting">
+                    <p>Color:</p><input class="color-input" type="text" placeholder="CSS Color">
+                </div>
+                <div class="setting">
+                    <p>Radius: 75</p><input class="slider" type="range" min="25" max="100" value="75">
+                </div>
+                <div class="setting">
+                    <p>X-Velocity: 0</p><input class="slider" type="range" min="-200" max="200" value="100">
+                </div>
+                <div class="setting">
+                    <p>Y-Velocity: 0</p><input class="slider" type="range" min="-200" max="200" value="100" onmousemove="updateSlider(this)">
+                </div>
+                <div class="button"><button class="add-button">Add Ball</button></div>
+            </div>
+        </div>
+
+        <div class="physics-canvas"><canvas></canvas></div>
+
+        <script src="demo.js" type="module"></script>
+    </body>

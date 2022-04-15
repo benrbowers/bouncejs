@@ -37,25 +37,26 @@ export class Engine {
 		this.mouseHeld = false;
 		this.mousePos = new Vector2();
 		this.mouseVel = new Vector2();
+		this.isStopped = false;
+		this.boundOnMouseUp = this.onMouseUp.bind(this);
+		this.boundOnMouseDown = this.onMouseDown.bind(this);
+		this.boundOnMouseMove = this.onMouseMove.bind(this);
+		this.boundOnTouchStart = this.onTouchStart.bind(this);
+		this.boundOnTouchMove = this.onTouchMove.bind(this);
 
 		this.onObjectPress = function () {};
 		this.onObjectRelease = function () {};
 		this.whileObjectHeld = function () {};
+		this.onStop = () => {};
 
 		canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight); //Ensure correct aspect ratio of canvas
 
-		//canvas.onmouseup = this.onMouseUp.bind(this);
-		window.addEventListener('mouseup', this.onMouseUp.bind(this));
-		//canvas.onmousedown = this.onMouseDown.bind(this);
-		window.addEventListener('mousedown', this.onMouseDown.bind(this));
-		//canvas.onmousemove = this.onMouseMove.bind(this);
-		window.addEventListener('mousemove', this.onMouseMove.bind(this));
-		//canvas.ontouchstart = this.onTouchStart.bind(this);
-		window.addEventListener('touchstart', this.onTouchStart.bind(this));
-		//canvas.ontouchend = this.onMouseUp.bind(this);
-		window.addEventListener('touchend', this.onMouseUp.bind(this));
-		//canvas.ontouchmove = this.onTouchMove.bind(this);
-		window.addEventListener('touchmove', this.onTouchMove.bind(this));
+		window.addEventListener('mouseup', this.boundOnMouseUp);
+		window.addEventListener('mousedown', this.boundOnMouseDown);
+		window.addEventListener('mousemove', this.boundOnMouseMove);
+		window.addEventListener('touchstart', this.boundOnTouchStart);
+		window.addEventListener('touchend', this.boundOnMouseUp);
+		window.addEventListener('touchmove', this.boundOnTouchMove);
 	}
 
 	onMouseMove(event) {
@@ -236,18 +237,33 @@ export class Engine {
 		this.whileObjectHeld = userFunction;
 	}
 
+	stop() {
+		this.isStopped = true;
+		window.removeEventListener('mouseup', this.boundOnMouseUp);
+		window.removeEventListener('mousedown', this.boundOnMouseDown);
+		window.removeEventListener('mousemove', this.boundOnMouseMove);
+		window.removeEventListener('touchstart', this.boundOnTouchStart);
+		window.removeEventListener('touchend', this.boundOnMouseUp);
+		window.removeEventListener('touchmove', this.boundOnTouchMove);
+
+		this.onStop();
+
+		console.log('Engine Stopped');
+	}
+
 	start() {
-		if (this.mouseHeld) {
-			if (this.selectedObject !== null) {
-				this.whileObjectHeld();
-			}
+		if (this.selectedObject !== null) {
+			this.whileObjectHeld();
 		}
 
 		// Check collisions with other balls
 		this.physObjects.forEach((ball1) => {
 			if (ball1.collidesWithObjects) {
 				this.physObjects.forEach((ball2) => {
-					if (ball2.collidesWithObjects) {
+					if (
+						ball2.collidesWithObjects &&
+						!(ball1.isStatic && ball2.isStatic)
+					) {
 						var dist = ball1.position.distance(ball2.position);
 
 						if (ball1 !== ball2 && dist < ball1.radius + ball2.radius) {
@@ -256,14 +272,30 @@ export class Engine {
 							// Handle overlap
 							var overlap = (ball1.radius + ball2.radius - dist) / 2;
 
-							ball1.position.x -=
-								(overlap / dist) * (ball2.position.x - ball1.position.x);
-							ball1.position.y -=
-								(overlap / dist) * (ball2.position.y - ball1.position.y);
-							ball2.position.x -=
-								(overlap / dist) * (ball1.position.x - ball2.position.x);
-							ball2.position.y -=
-								(overlap / dist) * (ball1.position.y - ball2.position.y);
+							if (ball1.isStatic) {
+								ball2.position.x -=
+									((overlap * 2) / dist) *
+									(ball1.position.x - ball2.position.x);
+								ball2.position.y -=
+									((overlap * 2) / dist) *
+									(ball1.position.y - ball2.position.y);
+							} else if (ball2.isStatic) {
+								ball1.position.x -=
+									((overlap * 2) / dist) *
+									(ball2.position.x - ball1.position.x);
+								ball1.position.y -=
+									((overlap * 2) / dist) *
+									(ball2.position.y - ball1.position.y);
+							} else {
+								ball1.position.x -=
+									(overlap / dist) * (ball2.position.x - ball1.position.x);
+								ball1.position.y -=
+									(overlap / dist) * (ball2.position.y - ball1.position.y);
+								ball2.position.x -=
+									(overlap / dist) * (ball1.position.x - ball2.position.x);
+								ball2.position.y -=
+									(overlap / dist) * (ball1.position.y - ball2.position.y);
+							}
 
 							// Distance between centers of the circles
 							var centerDistance = ball1.position.distance(ball2.position);
@@ -287,8 +319,8 @@ export class Engine {
 								ball2.velocity.dot(normal),
 								ball2.velocity.dot(tangent)
 							);
-							var m1 = ball1.mass;
-							var m2 = ball2.mass;
+							var m1 = ball2.isStatic ? 0.0 : ball1.mass;
+							var m2 = ball1.isStatic ? 0.0 : ball2.mass;
 
 							// Calculate the new normal velocities using 1D conservation of momentum
 							var v1x = ((m1 - m2) * v1.x + 2 * m2 * v2.x) / (m1 + m2);
@@ -380,7 +412,10 @@ export class Engine {
 		this.physObjects.forEach((ball) => {
 			ball.draw(this.canvas);
 		});
-		requestAnimationFrame(this.start.bind(this));
+
+		if (!this.isStopped) {
+			requestAnimationFrame(this.start.bind(this));
+		}
 	} //end start()
 
 	/**

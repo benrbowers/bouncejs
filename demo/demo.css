@@ -1,6 +1,7 @@
 body {
-    background-color: #252526;
+    background-color: hsl(240, 1%, 15%);
     overflow-x: hidden;
+    margin: 0;
 }
 
 h1 {
@@ -44,7 +45,7 @@ h1 {
 }
 
 .header {
-    font-size: 36px;
+    font-size: 32px;
     text-align: center;
     margin: 0px;
 }
@@ -117,7 +118,7 @@ h1 {
   button {
       background-color: royalblue;
       color: white;
-      font-size: 28px;
+      font-size: 20px;
       border: none;
   }
 
@@ -131,67 +132,12 @@ h1 {
       margin-bottom: 25px;;
   }
 
-  @media (min-resolution: 200dpi) {
-      h1 {
-          font-size: 120px;
-      }
-
+  @media (max-width: 480px) {
       .description {
-          font-size: 56px;
-          width: auto;
+          width: 90%;
       }
 
-      .header {
-          font-size: 72px;
+      .controls {
+          flex-direction: column;
       }
-
-      .settings p {
-          width: 400px;
-          font-size: 56px;
-      }
-
-      .toggle {
-        width: 100px;
-        height: 56px;
-        border-radius: 56px;
-    }
-    
-    .switch {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-        margin: 8px;
-    }
-    
-    .slider {
-        width: 300px;
-        height: 30px;
-        border-radius: 30px;
-      }
-      
-      .slider::-webkit-slider-thumb {
-        width: 50px;
-        height: 50px;
-        border-radius: 50px;
-      }
-      
-      .slider::-moz-range-thumb {
-        width: 50px;
-        height: 50px;
-        border-radius: 50px;
-      }
-    
-      .color-input {
-          width: 300px;
-          font-size: 56px;
-      }
-
-      button {
-          font-size: 56px;
-      }
-
-      button:active {
-        position: relative;
-        top: 10px;
-    }
   }

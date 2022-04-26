@@ -1,12 +1,57 @@
-import { Vector2 } from './Vector2.js.js';
-import { Ball } from './Ball.js.js';
-import { Engine } from './Engine.js.js';
+/* eslint-disable @typescript-eslint/no-this-alias */
+import { Vector2 } from '../Vector2.js';
+import { Ball } from '../Ball.js';
+import { Engine } from '../Engine.js';
 
 let canvas = document.querySelector('canvas');
-canvas.height = window.innerHeight / 2;
-canvas.width = (window.innerWidth * 2) / 3;
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
 
 let engine = new Engine(canvas, '#121212');
+
+// Snap ball to user's mouse if they are grabbing it
+engine.setWhileObjectHeld(() => {
+	console.log('held');
+	engine.selectedObject.velocity.x = 0;
+	engine.selectedObject.velocity.y = 0;
+
+	engine.selectedObject.position.x = engine.mousePos.x;
+	engine.selectedObject.position.y = engine.mousePos.y;
+});
+
+engine.setOnObjectRelease(() => {
+	if (engine.selectedObject !== null) {
+		//Time since last mouse movement
+		if (engine.mouseTimeStamp != 0) {
+			engine.mouseElapsedTime = (Date.now() - engine.mouseTimeStamp) / 1000;
+		}
+
+		if (engine.mouseElapsedTime < 0.03) {
+			//Ensure a recent velocity is used
+			const maxVel = 5000;
+			if (engine.mouseVel.magnitude > maxVel) {
+				engine.selectedObject.velocity.x = engine.mouseVel.unit.x * maxVel;
+				engine.selectedObject.velocity.y = engine.mouseVel.unit.y * maxVel;
+			} else {
+				engine.selectedObject.velocity.x = engine.mouseVel.x;
+				engine.selectedObject.velocity.y = engine.mouseVel.y;
+			}
+		}
+	}
+});
+
+engine.setOnFrame(() => {
+	// Set mouse cursor based on which ball user is hovering or grabbing
+	document.body.style.cursor = 'default';
+	engine.physObjects.forEach((ball) => {
+		if (engine.selectedObject !== null) {
+			document.body.style.cursor = 'grabbing';
+		} else if (ball.position.distance(engine.mousePos) < ball.radius) {
+			document.body.style.cursor = 'grab';
+		}
+	});
+});
+
 engine.start();
 
 /**

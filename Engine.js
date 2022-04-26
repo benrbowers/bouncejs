@@ -59,13 +59,17 @@ export class Engine {
 		window.addEventListener('touchmove', this.boundOnTouchMove);
 	}
 
+	/**
+	 * onMouseMove
+	 * @param {MouseEvent | TouchEvent} event
+	 */
 	onMouseMove(event) {
 		var rect = this.canvas.getBoundingClientRect();
 
 		var oldMousePos = new Vector2(this.mousePos.x, this.mousePos.y);
 
-		this.mousePos.x = event.pageX - rect.left;
-		this.mousePos.y = event.pageY - rect.top;
+		this.mousePos.x = event.clientX - rect.left;
+		this.mousePos.y = event.clientY - rect.top;
 
 		//Time since last mouse movement
 		if (this.mouseTimeStamp != 0) {

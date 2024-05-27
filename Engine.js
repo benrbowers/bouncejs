@@ -72,7 +72,7 @@ export class Engine {
 		this.mousePos.y = event.clientY - rect.top;
 
 		//Time since last mouse movement
-		if (this.mouseTimeStamp != 0) {
+		if (this.mouseTimeStamp !== 0) {
 			this.mouseElapsedTime = (Date.now() - this.mouseTimeStamp) / 1000;
 			//console.log('elapsed time: ' + this.mouseElapsedTime);
 		}
@@ -82,7 +82,7 @@ export class Engine {
 			.subtract(oldMousePos)
 			.scalarDiv(this.mouseElapsedTime);
 
-		if (this.selectedObject != null) {
+		if (this.selectedObject !== null) {
 			//Clear text highlight
 			var sel = window.getSelection
 				? window.getSelection()
@@ -165,7 +165,7 @@ export class Engine {
 		console.log(this.mousePos.x);
 
 		//Time since last mouse movement
-		if (this.mouseTimeStamp != 0) {
+		if (this.mouseTimeStamp !== 0) {
 			this.mouseElapsedTime = (Date.now() - this.mouseTimeStamp) / 1000;
 		}
 		this.mouseTimeStamp = Date.now();
@@ -386,7 +386,7 @@ export class Engine {
 		}); //end forEach
 
 		//Time since last update
-		if (this.timeStamp != 0) {
+		if (this.timeStamp !== 0) {
 			this.elapsedTime = (Date.now() - this.timeStamp) / 1000;
 			//console.log('elapsed time: ' + this.elapsedTime);
 		}

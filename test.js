@@ -24,7 +24,7 @@ engine.setOnObjectRelease(function () {
     if (engine.selectedObject !== null) {
 
         //Time since last mouse movement
-        if (engine.mouseTimeStamp != 0) {
+        if (engine.mouseTimeStamp !== 0) {
             engine.mouseElapsedTime = (Date.now() - engine.mouseTimeStamp) / 1000;
         }
 

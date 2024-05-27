@@ -22,7 +22,7 @@ engine.setWhileObjectHeld(() => {
 engine.setOnObjectRelease(() => {
 	if (engine.selectedObject !== null) {
 		//Time since last mouse movement
-		if (engine.mouseTimeStamp != 0) {
+		if (engine.mouseTimeStamp !== 0) {
 			engine.mouseElapsedTime = (Date.now() - engine.mouseTimeStamp) / 1000;
 		}
 
@@ -64,7 +64,7 @@ function toggle() {
 	let label = toggleSwitch.parentElement.children[0];
 
 	console.log(window.getComputedStyle(slider).width);
-	if (window.getComputedStyle(slider).right == '0px') {
+	if (window.getComputedStyle(slider).right === '0px') {
 		let sliderContainerWidth = parseInt(
 			window.getComputedStyle(toggleSwitch).width.split('px')[0]
 		);
@@ -108,17 +108,17 @@ function updateSlider() {
 	let label = slider.parentElement.children[0];
 	let labelText = label.textContent.split(' ')[0];
 
-	if (labelText == 'Drag:') {
+	if (labelText === 'Drag:') {
 		value = (value / 100).toFixed(2);
 	}
 
 	label.textContent = labelText + ' ' + value;
 
-	if (labelText == 'Gravity:') {
+	if (labelText === 'Gravity:') {
 		engine.physObjects.forEach((ball) => {
 			ball.gravity = parseFloat(value);
 		});
-	} else if (labelText == 'Drag:') {
+	} else if (labelText === 'Drag:') {
 		engine.physObjects.forEach((ball) => {
 			ball.drag = parseFloat(value);
 		});
@@ -133,9 +133,9 @@ function addBall() {
 	let color = inputs[0].value.toLowerCase();
 	check.color = color;
 
-	if (color == '') {
+	if (color === '') {
 		alert('Please enter a color. (red, blue, #000000, etc.)');
-	} else if (check.color == color) {
+	} else if (check.color === color) {
 		ball.color = color;
 		ball.radius = parseInt(inputs[1].value);
 		ball.velocity.x = parseInt(inputs[2].value);

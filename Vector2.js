@@ -92,8 +92,8 @@ export class Vector2 {
     get direction() {
         var arctan = Math.atan(this.y / this.x); // The inverse tangnet of y / x
 
-        if (this.x == 0) {
-            if (this.y == 0) {
+        if (this.x === 0) {
+            if (this.y === 0) {
                 return null;
             }// End if
             else if (this.y > 0) {
@@ -104,7 +104,7 @@ export class Vector2 {
             }// End else
         }// End if
 
-        else if (this.y == 0) {
+        else if (this.y === 0) {
             if (this.x > 0) {
                 return 0.0;
             }// End if

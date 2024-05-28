@@ -48,6 +48,7 @@ export class Engine {
 		this.onObjectRelease = function () {};
 		this.whileObjectHeld = function () {};
 		this.onStop = () => {};
+		this.onFrame = () => {};
 
 		canvas.width = canvas.height * (canvas.clientWidth / canvas.clientHeight); //Ensure correct aspect ratio of canvas
 
@@ -249,13 +250,25 @@ export class Engine {
 		window.removeEventListener('touchstart', this.boundOnTouchStart);
 		window.removeEventListener('touchend', this.boundOnMouseUp);
 		window.removeEventListener('touchmove', this.boundOnTouchMove);
-
-		this.onStop();
-
-		console.log('Engine Stopped');
 	}
 
 	start() {
+		requestAnimationFrame(this.runFrame.bind(this));
+	}
+
+	/**
+	 * Run engine frame. Passes itself recursively into requestAnimationFrame.
+	 * @param {DOMHighResTimeStamp} DOMTimeStamp
+	 */
+	runFrame(DOMTimeStamp) {
+		if (this.isStopped) {
+			this.onStop();
+			console.log('Engine stopped.');
+			return;
+		}
+
+		this.onFrame();
+
 		if (this.selectedObject !== null) {
 			this.whileObjectHeld();
 		}
@@ -387,10 +400,10 @@ export class Engine {
 
 		//Time since last update
 		if (this.timeStamp !== 0) {
-			this.elapsedTime = (Date.now() - this.timeStamp) / 1000;
+			this.elapsedTime = (DOMTimeStamp - this.timeStamp) / 1000;
 			//console.log('elapsed time: ' + this.elapsedTime);
 		}
-		this.timeStamp = Date.now();
+		this.timeStamp = DOMTimeStamp;
 
 		//Update physics of balls
 		this.physObjects.forEach((ball) => {
@@ -417,22 +430,8 @@ export class Engine {
 			ball.draw(this.canvas);
 		});
 
-		if (!this.isStopped) {
-			requestAnimationFrame(this.start.bind(this));
-		}
-	} //end start()
-
-	/**
-	 *
-	 * @param {Function} userFunction
-	 */
-	setOnFrame(userFunction) {
-		let oldStart = this.start.bind(this);
-		this.start = function () {
-			oldStart();
-			userFunction();
-		};
-	}
+		requestAnimationFrame(this.runFrame.bind(this));
+	} //end runFrame()
 
 	/**
 	 * Adds another object to the engine

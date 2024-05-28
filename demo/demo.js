@@ -40,7 +40,7 @@ engine.setOnObjectRelease(() => {
 	}
 });
 
-engine.setOnFrame(() => {
+engine.onFrame = () => {
 	// Set mouse cursor based on which ball user is hovering or grabbing
 	document.body.style.cursor = 'default';
 	engine.physObjects.forEach((ball) => {
@@ -50,7 +50,7 @@ engine.setOnFrame(() => {
 			document.body.style.cursor = 'grab';
 		}
 	});
-});
+};
 
 engine.start();
 

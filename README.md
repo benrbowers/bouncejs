@@ -4,12 +4,12 @@ Check out this [demo](https://www.benbowers.net/bouncejs/demo/index.html)
 
 ## Usage
 BounceJS draws on an html canvas, so the first thing you will want to do is place a canvas wherever it is that you want bouncyballs.
-```
+```html
 <canvas id="bouncejs-canvas"></canvas>
 ```
 
 Now you can pass that canvas to an instance of the `Engine` class along with the background color. Notice that the width and height are defined manually. This is necessary for the engine to pick up the width and height.
-```
+```javascript
 import { Engine } from './bouncejs/Engine.js';
 
 const canvas = document.getElementById('bouncejs-canvas');
@@ -20,7 +20,7 @@ const engine = new Engine(canvas, 'white');
 ```
 
 Now that the engine is instantiated, you can add balls to it and start it.
-```
+```javascript
 import { Engine } from './bouncejs/Engine.js';
 import { Ball } from './bouncejs/Ball.js';
 
